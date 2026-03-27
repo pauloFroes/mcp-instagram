@@ -27,12 +27,85 @@ Works with **Claude Code**, **Codex**, **Claude Desktop**, **Cursor**, **VS Code
 
 - Node.js 18+
 - Instagram Business or Creator account connected to a Facebook Page
-- Meta access token with Instagram Graph API permissions
+- A Meta App with the Instagram API configured
 
-| Variable | Where to find |
-| -------- | ------------- |
-| `META_ACCESS_TOKEN` | [developers.facebook.com](https://developers.facebook.com) → Instagram Graph API → Generate Token |
-| `INSTAGRAM_ACCOUNT_ID` | [Graph API Explorer](https://developers.facebook.com/tools/explorer/): `GET /me/accounts` → Page ID → `GET /{page-id}?fields=instagram_business_account` |
+| Variable | Description |
+| -------- | ----------- |
+| `META_ACCESS_TOKEN` | Facebook User token with Instagram permissions |
+| `INSTAGRAM_ACCOUNT_ID` | Your Instagram Business Account ID |
+
+---
+
+## Getting Your Credentials
+
+### Step 1: Create or configure a Meta App
+
+1. Go to [developers.facebook.com/apps](https://developers.facebook.com/apps)
+2. Create a new app or select an existing one
+3. Go to **Use Cases** in the left sidebar
+4. Find **"Gerenciar mensagens e conteúdo no Instagram"** (Manage Instagram messages and content) and click **Customize**
+5. **Important:** Click on **"API setup with Facebook login"** (not the default Instagram API login). The MCP uses the Facebook Graph API, which requires this flow for hashtags, insights, and publishing
+
+### Step 2: Add required permissions
+
+1. Go to [Graph API Explorer](https://developers.facebook.com/tools/explorer/)
+2. Select your app in the **"App da Meta"** dropdown
+3. **Important:** Make sure the domain is set to **`graph.facebook.com/`** (not `.instagram.com/`). Using the Instagram domain will cause "Invalid platform app" errors
+4. Set **"Usuário ou Página"** to **"Token do usuário"** (User Token)
+5. In the **Permissions** section, add all of these:
+   - `instagram_basic`
+   - `instagram_content_publish`
+   - `instagram_manage_comments`
+   - `instagram_manage_insights`
+   - `instagram_manage_messages`
+   - `pages_show_list`
+   - `pages_read_engagement`
+   - `pages_manage_engagement`
+   - `business_management`
+6. Click **"Generate Access Token"**
+7. Authorize all permissions in the popup
+8. Copy the generated token — this is your `META_ACCESS_TOKEN`
+
+> **Note:** Do NOT use the blue "Generate Instagram Access Token" button — it uses a different auth flow that may cause "Invalid platform app" errors.
+
+### Step 3: Get your Instagram Account ID
+
+1. In the [Graph API Explorer](https://developers.facebook.com/tools/explorer/), with the token generated above
+2. Make sure the domain is **`graph.facebook.com/`**
+3. Enter this query and click **Send**:
+
+```
+me/accounts?fields=instagram_business_account,name
+```
+
+4. In the response, find the `instagram_business_account.id` — this is your `INSTAGRAM_ACCOUNT_ID`:
+
+```json
+{
+  "data": [
+    {
+      "instagram_business_account": {
+        "id": "17841403450820551"  // ← this is your INSTAGRAM_ACCOUNT_ID
+      },
+      "name": "Your Page Name",
+      "id": "110940624565411"
+    }
+  ]
+}
+```
+
+### Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Invalid platform app` | Using `.instagram.com/` domain or the blue "Generate Instagram Access Token" button | Switch to `graph.facebook.com/` domain and use the regular "Generate Access Token" button |
+| `Invalid OAuth access token` (code 190) | Token expired | Generate a new token in Graph API Explorer |
+| `me/accounts` returns empty `data: []` | Missing `pages_show_list` permission | Add `pages_show_list` permission and regenerate the token |
+| `Missing required environment variable` | `META_ACCESS_TOKEN` or `INSTAGRAM_ACCOUNT_ID` not set | Check your env vars in the MCP config |
+
+> **Token expiration:** Tokens from Graph API Explorer are short-lived (~1-2 hours). For production use, [extend your token](https://developers.facebook.com/docs/facebook-login/guides/access-tokens/get-long-lived/) to a long-lived token (~60 days) or use a System User token from Meta Business Manager (never expires).
+
+---
 
 ## Installation
 
@@ -168,6 +241,8 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
+---
+
 ## Available Tools
 
 ### Profile
@@ -217,6 +292,8 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 |------|-------------|
 | `search_hashtag` | Search for a hashtag and get its ID (limited to 30 unique searches per 7 days) |
 | `get_hashtag_top_media` | Get top media posts for a hashtag ID |
+
+---
 
 ## Authentication
 
