@@ -32,7 +32,7 @@ Works with **Claude Code**, **Codex**, **Claude Desktop**, **Cursor**, **VS Code
 | Variable | Where to find |
 | -------- | ------------- |
 | `META_ACCESS_TOKEN` | [developers.facebook.com](https://developers.facebook.com) → Instagram Graph API → Generate Token |
-| `INSTAGRAM_ACCOUNT_ID` | Graph API Explorer: `GET /me/accounts` → Page ID → `GET /{page-id}?fields=instagram_business_account` |
+| `INSTAGRAM_ACCOUNT_ID` | [Graph API Explorer](https://developers.facebook.com/tools/explorer/): `GET /me/accounts` → Page ID → `GET /{page-id}?fields=instagram_business_account` |
 
 ## Installation
 
@@ -229,7 +229,7 @@ This server uses the **Facebook Graph API v25.0** with a Meta access token. The 
 - `pages_show_list` — Access connected Facebook Pages
 - `pages_read_engagement` — Read page engagement data
 
-Generate your token at [developers.facebook.com](https://developers.facebook.com) using the Graph API Explorer or a System User in Meta Business Manager.
+Generate your token at [developers.facebook.com](https://developers.facebook.com) using the [Graph API Explorer](https://developers.facebook.com/tools/explorer/) or a System User in Meta Business Manager.
 
 ## License
 
