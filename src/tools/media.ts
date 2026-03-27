@@ -27,7 +27,7 @@ export function registerMediaTools(server: McpServer) {
           .string()
           .optional()
           .describe(
-            "Comma-separated fields. Default: id,caption,media_type,permalink,timestamp,like_count,comments_count"
+            "Comma-separated fields. Default: id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count"
           ),
         limit: z
           .string()
@@ -48,7 +48,7 @@ export function registerMediaTools(server: McpServer) {
       try {
         const fields =
           args.fields ||
-          "id,caption,media_type,permalink,timestamp,like_count,comments_count";
+          "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count";
         const data = await apiRequest(
           `/${INSTAGRAM_ACCOUNT_ID}/media`,
           "GET",
@@ -73,7 +73,7 @@ export function registerMediaTools(server: McpServer) {
           .string()
           .optional()
           .describe(
-            "Comma-separated fields. Default: id,media_type,media_url,timestamp,permalink"
+            "Comma-separated fields. Default: id,media_type,media_url,thumbnail_url,timestamp,permalink"
           ),
       },
       annotations: {
@@ -85,7 +85,7 @@ export function registerMediaTools(server: McpServer) {
     async (args) => {
       try {
         const fields =
-          args.fields || "id,media_type,media_url,timestamp,permalink";
+          args.fields || "id,media_type,media_url,thumbnail_url,timestamp,permalink";
         const data = await apiRequest(
           `/${INSTAGRAM_ACCOUNT_ID}/stories`,
           "GET",
@@ -125,7 +125,7 @@ export function registerMediaTools(server: McpServer) {
       try {
         const limit = Math.min(parseInt(args.limit || "50", 10), 200);
         const top = parseInt(args.top || "10", 10);
-        const fields = "id,caption,media_type,permalink,timestamp,like_count,comments_count";
+        const fields = "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count";
 
         const posts = await apiRequestAllPages<MediaNode>(
           `/${INSTAGRAM_ACCOUNT_ID}/media`,
